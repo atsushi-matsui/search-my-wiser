@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  #go:
+  #  container_name: wiser_go
+  #  build:
+  #    context: ./docker/golang
+  #    dockerfile: Dockerfile
+  #  tty: true
+  #  ports:
+  #    - 8080:8080
+  #  env_file:
+  #    - ./wiser/.env
+  #  depends_on:
+  #    - db
+  #  volumes:
+  #    - ./wiser:/wiser
+
+  db:
+    container_name: wiser_db
+    build:
+      context: ./docker/db
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wiser
+      MYSQL_USER: wiser
+      MYSQL_PASSWORD: wiser
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      #- ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+
+
+networks:
+  default:
+    name: wiser
+    external: true
