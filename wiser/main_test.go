@@ -6,18 +6,35 @@ import (
 	"testing"
 )
 
-func Test_run(t *testing.T) {
+
+func TestIndex(t *testing.T) {
 	tests := []struct {
 		name string
 		w    string
 		m    int
 	}{
-		{name: "input0", w: "../../wiser-20140928/files/jawiki-latest-pages-articles.xml", m: 1},
+		{name: "5件登録", w: "../files/jawiki-latest-pages-articles.xml", m: 5},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			flag.CommandLine.Set("w", tt.w)               // -target=iと指定したかの様に設定できる
-			flag.CommandLine.Set("m", strconv.Itoa(tt.m)) // Convert tt.m to string before passing it as an argument
+			flag.CommandLine.Set("w", tt.w)               // 登録するwikiデータの指定
+			flag.CommandLine.Set("m", strconv.Itoa(tt.m)) // 登録するwikiデータの最大件数
+			main()
+		})
+	}
+}
+
+
+func TestSearch(t *testing.T) {
+	tests := []struct {
+		name string
+		q    string
+	}{
+		{name: "言語を検索", q: "言語"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			flag.CommandLine.Set("q", tt.q) // 検索クエリを設定
 			main()
 		})
 	}

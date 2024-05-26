@@ -18,7 +18,6 @@ var (
 	wikipediaDumpFile       string
 	query                   string
 	maxIndexCount           int
-	iiBufferUpdateThreshold int
 
 	iiBuffer *inverseindex.InverseIndex
 )
