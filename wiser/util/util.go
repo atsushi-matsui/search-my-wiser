@@ -5,7 +5,7 @@ import (
 	"unicode/utf8"
 )
 
-func IntToBetes(num int) []byte {
+func IntToBytes(num int) []byte {
 	b := make([]byte, 4)
 	binary.BigEndian.PutUint32(b, uint32(num))
 	return b

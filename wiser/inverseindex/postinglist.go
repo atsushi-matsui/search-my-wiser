@@ -176,13 +176,13 @@ func encodePostings(pl PostingsList) ([]byte, error) {
 func encodePostingsNone(pl PostingsList) ([]byte, error) {
 	var ePl []byte
 	for _, p := range pl {
-		ePl = append(ePl, util.IntToBetes(p.DocId)...)
-		ePl = append(ePl, util.IntToBetes(p.PostingsCount)...)
+		ePl = append(ePl, util.IntToBytes(p.DocId)...)
+		ePl = append(ePl, util.IntToBytes(p.PostingsCount)...)
 
 		// ドキュメントの出現位置をソートしておく
 		sort.Ints(p.Postings)
 		for _, pos := range p.Postings {
-			ePl = append(ePl, util.IntToBetes(pos)...)
+			ePl = append(ePl, util.IntToBytes(pos)...)
 		}
 	}
 
