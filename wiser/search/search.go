@@ -47,7 +47,7 @@ func Search(query string) (*SearchResults, error) {
 		return nil, fmt.Errorf("no search result. query: %s", query)
 	}
 
-	// ポスティングリストのドキュメントの出現回数で昇順にソート
+	// ドキュメント内でのトークンの出現回数で昇順にソート
 	var searchCandidates searchCandidates
 	for i, iiVal := range *ii {
 		if iiVal == nil {

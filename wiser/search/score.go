@@ -30,7 +30,7 @@ func tfIdf(searchCandidates searchCandidates) float64 {
 	return score
 }
 
-func bm25(searchCandidates searchCandidates) float64 {
+func bm25(_ searchCandidates) float64 {
 	fmt.Printf("undefined function")
 	os.Exit(1)
 

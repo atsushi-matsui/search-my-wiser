@@ -20,7 +20,7 @@ func TextToPostingsLists(docId int, text string, postings *InverseIndex) error {
 			break
 		}
 		position++ //トークンの出現位置
-		err := TextToPostingsList(docId, tokenStr, position, bufferPostings)
+		err := textToPostingsList(docId, tokenStr, position, bufferPostings)
 		if err != nil {
 			fmt.Printf("Error text to postings list: %v\n", err)
 			return err
@@ -28,7 +28,8 @@ func TextToPostingsLists(docId int, text string, postings *InverseIndex) error {
 	}
 
 	if postings != nil {
-		MergeInvertedIndex(postings, bufferPostings)
+		// ミニ転置インデックスにマージする
+		mergeInvertedIndex(postings, bufferPostings)
 	} else {
 		postings = bufferPostings
 	}
@@ -60,7 +61,7 @@ func QueryToPostingList(query string, ii *InverseIndexList) error {
 			return err
 		}
 		// ポスティングリストをデコードする
-		pl, err := DecodePostings(t.Postings)
+		pl, err := decodePostings(t.Postings)
 		if err != nil {
 			return err
 		}
@@ -73,7 +74,7 @@ func QueryToPostingList(query string, ii *InverseIndexList) error {
 /**
  * テキストをポスティングリストに変換する
  */
-func TextToPostingsList(docId int, tokenStr string, position int, bufferPostings *InverseIndex) error {
+func textToPostingsList(docId int, tokenStr string, position int, bufferPostings *InverseIndex) error {
 	var p *Postings
 	var iiVal *InverseIndexValue
 
@@ -91,18 +92,14 @@ func TextToPostingsList(docId int, tokenStr string, position int, bufferPostings
 		p.PostingsCount++
 	} else {
 		// 新規でポスティングリストを作成
-		if docId > 0 {
+		if docId > 0 { // ストレージ内にトークンが存在しない場合は完全に新規作成
 			iiVal = NewInverseIndex(token.Id, nil, 1, 0)
-		} else {
+		} else { // 存在する場合はストレージから取得したドキュメント数を設定
 			iiVal = NewInverseIndex(token.Id, nil, token.DocsCount, 0)
 		}
 
-		if iiVal != nil {
-			// ミニ転置インデックスへ追加
-			(*bufferPostings)[token.Id] = iiVal
-		} else {
-			return fmt.Errorf("can not create new index. token: %d", token.Id)
-		}
+		// ミニ転置インデックスへ追加
+		(*bufferPostings)[token.Id] = iiVal
 		// ポスティングリストを作成
 		pl := NewPostingsList(docId)
 		iiVal.PostingsList = pl
@@ -110,7 +107,7 @@ func TextToPostingsList(docId int, tokenStr string, position int, bufferPostings
 	}
 	// 出現位置を追加
 	p.Postings = append(p.Postings, position)
-	// 転置インデックスでのトークン出現回数も追加
+	// 転置インデックス全体でのトークンの総出現回数も追加
 	iiVal.PostingsCount++
 
 	return nil

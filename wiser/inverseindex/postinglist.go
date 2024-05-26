@@ -37,7 +37,7 @@ func NewPostings(docId int, p []int, pc int) *Postings {
 }
 
 // 同一のドキュメントIDを持つ場合は動作を保証しない
-func MergePostings(base, toBeAdded PostingsList) (PostingsList, error) {
+func mergePostings(base, toBeAdded PostingsList) (PostingsList, error) {
 	merged := PostingsList{}
 
 	for len(base) > 0 || len(toBeAdded) > 0 {
@@ -65,7 +65,7 @@ func UpdatePostings(iiVal *InverseIndexValue) error {
 		return err
 	}
 	//取得したポスティングリストとマージする
-	mergedPl, err := MergePostings(*iiVal.PostingsList, *pl.PostingsList)
+	mergedPl, err := mergePostings(*iiVal.PostingsList, *pl.PostingsList)
 	if err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func fetchPostings(tokenId int) (*decodedPostingsList, error) {
 		return nil, err
 	}
 
-	pl, err := DecodePostings(token.Postings)
+	pl, err := decodePostings(token.Postings)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func fetchPostings(tokenId int) (*decodedPostingsList, error) {
 	return pl, nil
 }
 
-func DecodePostings(ePl []byte) (*decodedPostingsList, error) {
+func decodePostings(ePl []byte) (*decodedPostingsList, error) {
 	//デコード処理
 	var dpl *decodedPostingsList
 	var err error
@@ -148,7 +148,7 @@ func decodePostingsNone(ePl []byte) (*decodedPostingsList, error) {
 		PostingsCount: pCount}, nil
 }
 
-func decodePostingsGolomb(ePl []byte) (*decodedPostingsList, error) {
+func decodePostingsGolomb(_ []byte) (*decodedPostingsList, error) {
 	fmt.Println("undefined function.")
 	os.Exit(1)
 
@@ -189,7 +189,7 @@ func encodePostingsNone(pl PostingsList) ([]byte, error) {
 	return ePl, nil
 }
 
-func encodePostingsGolomb(pl PostingsList) ([]byte, error) {
+func encodePostingsGolomb(_ PostingsList) ([]byte, error) {
 	fmt.Println("undefined function.")
 	os.Exit(1)
 

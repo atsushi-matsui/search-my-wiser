@@ -20,10 +20,10 @@ func NewInverseIndex(tokenId int, postingList *PostingsList, docCount, postingsC
 	}
 }
 
-func MergeInvertedIndex(base, toBeAdded *InverseIndex) error {
+func mergeInvertedIndex(base, toBeAdded *InverseIndex) error {
 	for _, addedI := range *toBeAdded {
 		if baseI, ok := (*base)[addedI.TokenId]; ok {
-			mergedPostings, err := MergePostings(*baseI.PostingsList, *addedI.PostingsList)
+			mergedPostings, err := mergePostings(*baseI.PostingsList, *addedI.PostingsList)
 			if err != nil {
 				return err
 			}
